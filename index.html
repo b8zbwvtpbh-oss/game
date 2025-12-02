@@ -22,7 +22,6 @@
         position: relative;
         overflow: hidden;
         border-radius: 15px;
-        touch-action: none;
     }
 
     #player {
@@ -80,30 +79,16 @@
         color: #333;
         min-height: 30px;
     }
-
-    /* أزرار اللمس للجوال */
-    .touch-btn {
-        position: absolute;
-        bottom: 10px;
-        width: 50%;
-        height: 50px;
-        opacity: 0.2;
-        z-index: 10;
-    }
-    #left-btn { left: 0; }
-    #right-btn { right: 0; }
 </style>
 </head>
 
 <body>
 
-<h2>🎮 كيف تدير اموالك؟</h2>
+<h2> كيف تدير اموالك؟</h2>
 <p id="score">النقاط: 0</p>
 
 <div id="game-area">
     <div id="player"></div>
-    <div id="left-btn" class="touch-btn"></div>
-    <div id="right-btn" class="touch-btn"></div>
 </div>
 
 <div id="choices">
@@ -125,7 +110,6 @@
     let x = 150;
     let score = 0;
 
-    // عبارات حسب نوع الاختيار
     const messages = {
       save: [
         "💰 احفظ قرشك الأبيض ليومك الأسود",
@@ -141,53 +125,46 @@
         "🍎 الاحتياجات أهم من الكماليات"
       ],
       fun: [
-        "💫 إن كنت على البير اصرف بتدبير",
-        "🎈لا مال لمن لا تدبير له",
+        "🎉 المرح حلو، بس بعد ما تضمن احتياجاتك",
+        "🎈 اللعب والفرح زينين، بس لا يضيعون قرشك",
         "😉 اللي معه قرش محيره، يجيب حمام ويطيره",
         "💸 اصرف ما في الجيب يأتيك ما في الغيب"
       ]
     };
 
-    // تحريك اللاعب
-    function movePlayer(dir) {
-        if (dir === "left") x -= 15;
-        if (dir === "right") x += 15;
+  
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "ArrowLeft") x -= 15;
+        if (e.key === "ArrowRight") x += 15;
+
         if (x < 0) x = 0;
         if (x > 310) x = 310;
+
         player.style.left = x + "px";
-    }
+    });
 
-    // أزرار اللمس للجوال
-    let leftInterval, rightInterval;
-    const leftBtn = document.getElementById("left-btn");
-    const rightBtn = document.getElementById("right-btn");
-
-    leftBtn.addEventListener("touchstart", () => { leftInterval = setInterval(() => movePlayer("left"), 100); });
-    leftBtn.addEventListener("touchend", () => clearInterval(leftInterval));
-    rightBtn.addEventListener("touchstart", () => { rightInterval = setInterval(() => movePlayer("right"), 100); });
-    rightBtn.addEventListener("touchend", () => clearInterval(rightInterval));
-
-    // إنشاء "ريالات"
+  
     function spawnCoin() {
         let coin = document.createElement("div");
         coin.classList.add("coin");
         coin.style.left = Math.random() * 320 + "px";
         coin.style.top = "0px";
-        coin.innerHTML = "💵"; // رمز ريال
+        coin.innerHTML = "💵";
         area.appendChild(coin);
 
         let fall = setInterval(() => {
             let top = parseInt(coin.style.top);
             coin.style.top = top + 5 + "px";
 
-            // التقاط اللاعب للعملة
-            if (top > 430 && Math.abs(parseInt(coin.style.left) - x) < 40) {
+        
+            if (top > 430 &&
+                Math.abs(parseInt(coin.style.left) - x) < 40) {
+
                 score++;
                 scoreText.innerHTML = "النقاط: " + score;
                 coin.remove();
                 clearInterval(fall);
-
-                if (score === 5) showChoices();
+                if (score=== 5) showChoices();
             }
 
             if (top > 480) {
@@ -199,12 +176,12 @@
 
     setInterval(spawnCoin, 1200);
 
-    // عرض الخيارات بعد جمع 5 ريالات
+  
     function showChoices() {
         choices.style.display = "block";
     }
 
-    // اختيار ادخار / حاجة / ترفيه
+    
     function choose(option) {
         let msgs = messages[option];
         let idx = Math.floor(Math.random() * msgs.length);
