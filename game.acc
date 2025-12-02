@@ -38,10 +38,15 @@
     .coin {
         width: 30px;
         height: 30px;
-        background: gold;
-        border-radius: 50%;
         position: absolute;
-        border: 2px solid #e6c200;
+        border-radius: 50%;
+        border: 2px solid #333;
+        text-align: center;
+        line-height: 30px;
+        font-size: 16px;
+        font-weight: bold;
+        color: green;
+        background: #fff;
     }
 
     #score {
@@ -121,8 +126,8 @@
         "🍎 الاحتياجات أهم من الكماليات"
       ],
       fun: [
-        "💫 ان كنت على البير اصرف بتدبير",
-        "🎈لا مال لمن لا تدبير له",
+        "🎉 المرح حلو، بس بعد ما تضمن احتياجاتك",
+        "🎈 اللعب والفرح زينين، بس لا يضيعون قرشك",
         "😉 اللي معه قرش محيره، يجيب حمام ويطيره",
         "💸 اصرف ما في الجيب يأتيك ما في الغيب"
       ]
@@ -139,12 +144,13 @@
         player.style.left = x + "px";
     });
 
-    // إنشاء عملات
+    // إنشاء "ريالات"
     function spawnCoin() {
         let coin = document.createElement("div");
         coin.classList.add("coin");
         coin.style.left = Math.random() * 320 + "px";
         coin.style.top = "0px";
+        coin.innerHTML = "💵"; // رمز ريال
         area.appendChild(coin);
 
         let fall = setInterval(() => {
@@ -159,7 +165,6 @@
                 scoreText.innerHTML = "النقاط: " + score;
                 coin.remove();
                 clearInterval(fall);
-
                 if (score === 5) showChoices();
             }
 
@@ -168,7 +173,7 @@
                 clearInterval(fall);
             }
         }, 40);
-        }
+    }
 
     setInterval(spawnCoin, 1200);
 
