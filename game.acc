@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>لعبة الإدارة المالية للأطفال</title>
+
+<style>
+    body {
+        background: #f6f9fc;
+        font-family: "Tahoma";
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    #game-area {
+        width: 360px;
+        height: 500px;
+        background: white;
+        border: 3px solid #333;
+        margin: 20px auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+    }
+
+    #player {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        bottom: 20px;
+        left: 150px;
+        background-image: url('https://dmxth3fhxofea.cloudfront.net/Gallery/b247fae7-da60-4cfb-8bbf-c031b749ad15.png');
+        background-size: cover;
+        border-radius: 10px;
+    }
+
+    .coin {
+        width: 30px;
+        height: 30px;
+        background: gold;
+        border-radius: 50%;
+        position: absolute;
+        border: 2px solid #e6c200;
+    }
+
+    #score {
+        font-size: 22px;
+        margin-top: 10px;
+        color: #444;
+    }
+
+    #choices {
+        display: none;
+        margin-top: 20px;
+    }
+
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .save { background: #7bd87b; }
+    .need { background: #7bb3d8; }
+    .fun { background: #d87b7b; }
+
+    #message {
+        font-size: 20px;
+        margin-top: 15px;
+        color: #333;
+        min-height: 30px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>🎮 لعبة المصاريف الذكية</h2>
+<p id="score">النقاط: 0</p>
+
+<div id="game-area">
+    <div id="player"></div>
+</div>
+
+<div id="choices">
+    <h3>كيف تريد استخدام نقودك؟</h3>
+    <button class="save" onclick="choose('save')">ادخار</button>
+    <button class="need" onclick="choose('need')">حاجة</button>
+    <button class="fun" onclick="choose('fun')">ترفيه</button>
+</div>
+
+<p id="message"></p>
+
+<script>
+    let player = document.getElementById("player");
+    let area = document.getElementById("game-area");
+    let scoreText = document.getElementById("score");
+    let choices = document.getElementById("choices");
+    let message = document.getElementById("message");
+
+    let x = 150;
+    let score = 0;
+
+    // عبارات حسب نوع الاختيار
+    const messages = {
+      save: [
+        "💰 احفظ قرشك الأبيض ليومك الأسود",
+        "💵 الادخار زين، والرزق أكيد",
+        "🏦 وفر اليوم، تتهنى بكرة",
+        "🐢 المال القليل مع الادخار يصير كثير",
+        "🎯 اللي يدخر يحصد ويعيش مرتاح",
+        "💎 من يدخر قرشاً، ينفعه قرش"
+      ],
+      need: [
+        "🛒 حاجتك قبل رغبتك",
+        "✅ فكر قبل ما تصرف، لا تندم بعدين",
+        "🍎 الاحتياجات أهم من الكماليات"
+      ],
+      fun: [
+        "💫 ان كنت على البير اصرف بتدبير",
+        "🎈لا مال لمن لا تدبير له",
+        "😉 اللي معه قرش محيره، يجيب حمام ويطيره",
+        "💸 اصرف ما في الجيب يأتيك ما في الغيب"
+      ]
+    };
+
+    // تحريك اللاعب
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "ArrowLeft") x -= 15;
+        if (e.key === "ArrowRight") x += 15;
+
+        if (x < 0) x = 0;
+        if (x > 310) x = 310;
+
+        player.style.left = x + "px";
+    });
+
+    // إنشاء عملات
+    function spawnCoin() {
+        let coin = document.createElement("div");
+        coin.classList.add("coin");
+        coin.style.left = Math.random() * 320 + "px";
+        coin.style.top = "0px";
+        area.appendChild(coin);
+
+        let fall = setInterval(() => {
+            let top = parseInt(coin.style.top);
+            coin.style.top = top + 5 + "px";
+
+            // التقاط اللاعب للعملة
+            if (top > 430 &&
+                Math.abs(parseInt(coin.style.left) - x) < 40) {
+
+                score++;
+                scoreText.innerHTML = "النقاط: " + score;
+                coin.remove();
+                clearInterval(fall);
+
+                if (score === 5) showChoices();
+            }
+
+            if (top > 480) {
+                coin.remove();
+                clearInterval(fall);
+            }
+        }, 40);
+        }
+
+    setInterval(spawnCoin, 1200);
+
+    // قائمة الخيارات
+    function showChoices() {
+        choices.style.display = "block";
+    }
+
+    // وظيفة اختيار الادخار / الحاجة / الترفيه
+    function choose(option) {
+        let msgs = messages[option];
+        let idx = Math.floor(Math.random() * msgs.length);
+        message.innerHTML = msgs[idx];
+
+        choices.style.display = "none";
+        score = 0;
+        scoreText.innerHTML = "النقاط: 0";
+    }
+</script>
+
+</body>
+</html>
